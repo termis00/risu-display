@@ -19,7 +19,7 @@ Then add to `extension-install-manifest.json`:
   "installed": {
     "risu-display": {
       "version": "1.0.0",
-      "files": ["manifest.json", "risu-display.js", "risu-display.css"]
+      "files": ["manifest.json", "risu-display.js", "risu-display.css", "assets/**"]
     }
   }
 }
@@ -33,8 +33,13 @@ Tell your AI agent to use these code block formats:
 
 - ```` ```risu-portrait ```` — Character portrait with name and image
 - ```` ```risu-status ```` — Status panel (HP, MP, mood, etc.)
-- ```` ```risu-dialogue ```` — Character dialogue with name and text
+- ```` ```risu-dialogue ```` — Character dialogue with name, text, and optional `emotion:` portrait
 - ```` ```risu-gallery ```` — Image gallery grid
+- ```` ```risu-scene ```` / ```` ```risu-panel ```` / ```` ```risu-image ```` — Scene images, info panels, single images
+
+Emotion portraits resolve by convention from `assets/portraits/<character>/<emotion>.png|webp|jpg|svg`, falling back to the character's `default.*` and then `portraits/default.svg`.
+
+See [SKILL.md](SKILL.md) for the full block syntax — it doubles as the instruction file for your agent.
 
 ## License
 

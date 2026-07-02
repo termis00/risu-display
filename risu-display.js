@@ -16,22 +16,46 @@
 
   // --- Block content parser ---
 
+  // Frontmatter ends at `---`, or at the first line that is not `key: value`
+  // (so a missing `---` never swallows the body). `(?!\/\/)` keeps bare URLs
+  // like `https://...` from being parsed as a `https:` prop.
   function parseBlock(raw) {
     const lines = raw.split('\n');
     const props = {};
+    const entries = [];
     let bodyStart = -1;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       if (line === '---') { bodyStart = i + 1; break; }
-      const m = line.match(/^([a-zA-Z_]\w*)\s*:\s*(.+)$/);
+      if (!line) continue;
+      const m = line.match(/^([a-zA-Z_]\w*)\s*:\s*(?!\/\/)(.+)$/);
       if (m) {
         props[m[1].toLowerCase()] = m[2].trim();
-      } else if (i === 0 && !line.includes(':')) {
-        props._value = line;
+        entries.push({ key: m[1], value: m[2].trim() });
+      } else {
+        bodyStart = i;
+        break;
       }
     }
     const body = bodyStart >= 0 ? lines.slice(bodyStart).join('\n').trim() : '';
-    return { props, body };
+    return { props, body, entries };
+  }
+
+  // Prop lines (original key case) minus reserved keys, for panel/status
+  // blocks written without a `---` separator.
+  function entryLines(entries, reserved) {
+    return entries
+      .filter(e => !reserved.includes(e.key.toLowerCase()))
+      .map(e => e.key + ': ' + e.value)
+      .join('\n');
+  }
+
+  const SIZES = ['small', 'medium', 'large', 'xlarge'];
+  const PANEL_STYLES = ['dark', 'glass', 'minimal'];
+
+  function pick(value, allowed, fallback) {
+    value = (value || '').trim().toLowerCase();
+    return allowed.includes(value) ? value : fallback;
   }
 
   function resolveImage(path) {
@@ -52,37 +76,78 @@
     return node;
   }
 
-  function makeImg(src, alt, cls) {
+  function makeImg(src, alt, cls, fallbacks) {
     const img = el('img', cls || 'risu-image', { src: resolveImage(src), alt: alt || '', loading: 'lazy' });
+    const queue = (fallbacks || []).slice();
     img.onerror = function() {
+      if (queue.length) {
+        this.src = resolveImage(queue.shift());
+        return;
+      }
+      this.onerror = null;
       this.style.display = 'none';
-      const fb = el('div', 'risu-image-fallback', { text: alt || src });
-      this.parentNode.insertBefore(fb, this.nextSibling);
+      if (this.parentNode) {
+        const fb = el('div', 'risu-image-fallback', { text: alt || src });
+        this.parentNode.insertBefore(fb, this.nextSibling);
+      }
     };
     return img;
+  }
+
+  // --- Emotion asset resolution ---
+  // Convention: assets/portraits/<character>/<emotion>.<ext>, falling back to
+  // the character's default portrait, then the shared default portrait.
+  const EMOTION_EXTS = ['png', 'webp', 'jpg', 'svg'];
+
+  function emotionCandidates(character, emotion) {
+    const c = encodeURIComponent(character.trim().toLowerCase());
+    const e = encodeURIComponent((emotion || 'default').trim().toLowerCase());
+    const paths = [];
+    EMOTION_EXTS.forEach(ext => paths.push('portraits/' + c + '/' + e + '.' + ext));
+    if (e !== 'default') {
+      EMOTION_EXTS.forEach(ext => paths.push('portraits/' + c + '/default.' + ext));
+    }
+    paths.push('portraits/default.svg');
+    return paths;
+  }
+
+  // Explicit image prop wins; otherwise emotion/character resolve by
+  // convention. `auto` also resolves from the character name alone (used by
+  // risu-portrait, where an image is always wanted); dialogue only resolves
+  // when emotion/character is given, to avoid probing on every speech bubble.
+  function resolvePortraitSource(props, character, auto) {
+    const explicit = props.image || props.path || props.portrait || '';
+    if (explicit) return { src: explicit, fallbacks: [] };
+    const who = (props.character || character || '').trim();
+    if (who && (auto || props.emotion || props.character)) {
+      const candidates = emotionCandidates(who, props.emotion);
+      return { src: candidates[0], fallbacks: candidates.slice(1) };
+    }
+    return { src: '', fallbacks: [] };
   }
 
   // --- Block processors ---
 
   function processImage(raw) {
-    const { props } = parseBlock(raw);
-    const path = props.path || props._value || raw.trim();
+    const { props, body } = parseBlock(raw);
+    const path = props.path || body || raw.trim();
     const alt = props.alt || path.split('/').pop();
-    const size = props.size || getSetting('portrait_size', 'medium');
+    const size = pick(props.size, SIZES, pick(getSetting('portrait_size', 'medium'), SIZES, 'medium'));
     const wrap = el('div', 'risu-image-wrap risu-size-' + size);
     wrap.appendChild(makeImg(path, alt));
     return wrap;
   }
 
   function processPortrait(raw) {
-    const { props } = parseBlock(raw);
-    const image = props.image || props.path || props._value || '';
+    const { props, body } = parseBlock(raw);
+    if (!props.image && !props.path && body) props.image = body.split('\n')[0].trim();
     const name = props.name || '';
     const title = props.title || '';
-    const size = props.size || getSetting('portrait_size', 'medium');
+    const size = pick(props.size, SIZES, pick(getSetting('portrait_size', 'medium'), SIZES, 'medium'));
+    const { src, fallbacks } = resolvePortraitSource(props, name, true);
 
     const wrap = el('div', 'risu-portrait-wrap risu-size-' + size);
-    wrap.appendChild(makeImg(image, name, 'risu-portrait-image'));
+    wrap.appendChild(makeImg(src, name, 'risu-portrait-image', fallbacks));
 
     if (name || title) {
       const info = el('div', 'risu-portrait-info');
@@ -94,9 +159,9 @@
   }
 
   function processPanel(raw) {
-    const { props, body } = parseBlock(raw);
+    const { props, body, entries } = parseBlock(raw);
     const title = props.title || '';
-    const style = props.style || getSetting('panel_style', 'dark');
+    const style = pick(props.style, PANEL_STYLES, pick(getSetting('panel_style', 'dark'), PANEL_STYLES, 'dark'));
 
     const wrap = el('div', 'risu-panel-wrap risu-panel-' + style);
 
@@ -105,10 +170,8 @@
     }
 
     const content = el('div', 'risu-panel-body');
-    const textSource = body || Object.entries(props)
-      .filter(([k]) => k !== 'title' && k !== 'style' && k !== '_value')
-      .map(([k, v]) => k + ': ' + v)
-      .join('\n');
+    const textSource = [entryLines(entries, ['title', 'style']), body]
+      .filter(Boolean).join('\n');
 
     textSource.split('\n').forEach(line => {
       const trimmed = line.trim();
@@ -147,13 +210,13 @@
   function processDialogue(raw) {
     const { props, body } = parseBlock(raw);
     const speaker = props.speaker || props.name || '';
-    const portrait = props.portrait || props.image || '';
-    const text = body || props._value || '';
+    const text = body || '';
+    const { src, fallbacks } = resolvePortraitSource(props, speaker, false);
 
     const wrap = el('div', 'risu-dialogue-wrap');
 
-    if (portrait) {
-      wrap.appendChild(makeImg(portrait, speaker, 'risu-dialogue-portrait'));
+    if (src) {
+      wrap.appendChild(makeImg(src, speaker, 'risu-dialogue-portrait', fallbacks));
     }
 
     const bodyDiv = el('div', 'risu-dialogue-body');
@@ -167,8 +230,8 @@
   }
 
   function processScene(raw) {
-    const { props } = parseBlock(raw);
-    const image = props.image || props.path || props._value || raw.trim();
+    const { props, body } = parseBlock(raw);
+    const image = props.image || props.path || body || raw.trim();
     const caption = props.caption || props.title || '';
 
     const wrap = el('div', 'risu-scene-wrap');
@@ -181,7 +244,7 @@
   }
 
   function processStatus(raw) {
-    const { props, body } = parseBlock(raw);
+    const { props, body, entries } = parseBlock(raw);
     const title = props.title || '';
 
     const wrap = el('div', 'risu-status-wrap');
@@ -189,14 +252,17 @@
       wrap.appendChild(el('div', 'risu-status-title', { text: title }));
     }
 
-    const lines = (body || '').split('\n').filter(l => l.trim());
+    const textSource = [entryLines(entries, ['title']), body].filter(Boolean).join('\n');
+    const lines = textSource.split('\n').filter(l => l.trim());
     lines.forEach(line => {
-      const m = line.match(/^(.+?):\s*(\d+)\s*\/\s*(\d+)$/);
+      const m = line.match(/^(.+?):\s*([\d,]+)\s*\/\s*([\d,]+)\s*$/);
       if (m) {
+        const cur = parseInt(m[2].replace(/,/g, ''), 10);
+        const max = parseInt(m[3].replace(/,/g, ''), 10);
         const row = el('div', 'risu-status-bar-row');
         row.appendChild(el('span', 'risu-status-bar-label', { text: m[1].trim() }));
         const track = el('div', 'risu-status-bar-track');
-        const pct = Math.min(100, Math.max(0, (parseInt(m[2]) / parseInt(m[3])) * 100));
+        const pct = max > 0 ? Math.min(100, Math.max(0, (cur / max) * 100)) : 0;
         const fill = el('div', 'risu-status-bar-fill');
         fill.style.width = pct + '%';
         if (pct > 60) fill.classList.add('risu-bar-high');
@@ -266,6 +332,8 @@
         original.call(this, container);
         processRisuBlocks(container);
       };
+      // Catch messages that rendered before the hook was installed.
+      processRisuBlocks(document);
       return;
     }
     if (++_hookAttempts > 20) {

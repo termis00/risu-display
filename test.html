@@ -161,6 +161,74 @@ style: dark
   </div>
 </div>
 
+<h2>10. 회귀: risu-dialogue (--- 생략)</h2>
+<div class="test-section" id="test-dialogue-no-separator">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지 — 구분자 없이도 본문이 살아야 함</div>
+    <div class="pre-header">risu-dialogue</div>
+    <pre><code class="language-risu-dialogue">speaker: Elara
+구분자 없이 쓴 대사입니다. 이 줄부터 본문으로 처리되어야 합니다.
+두 번째 줄도 유지됩니다.</code></pre>
+  </div>
+</div>
+
+<h2>11. 회귀: bare URL (prop 오파싱 방지)</h2>
+<div class="test-section" id="test-bare-url">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지 — 404여도 폴백 텍스트에 전체 URL이 보여야 함 (https: prop 오파싱 아님)</div>
+    <div class="pre-header">risu-portrait</div>
+    <pre><code class="language-risu-portrait">https://example.invalid/portrait.png</code></pre>
+  </div>
+</div>
+
+<h2>12. 회귀: risu-image xlarge</h2>
+<div class="test-section" id="test-xlarge">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지 — 85% 폭, 테두리 없음, 중앙 정렬</div>
+    <div class="pre-header">risu-image</div>
+    <pre><code class="language-risu-image">path: scenes/ruins.svg
+size: xlarge</code></pre>
+  </div>
+</div>
+
+<h2>13. 회귀: risu-status 콤마 숫자 + max 0 + --- 생략</h2>
+<div class="test-section" id="test-status-comma">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지</div>
+    <div class="pre-header">risu-status</div>
+    <pre><code class="language-risu-status">title: 자원
+HP: 1,200/2,000
+쉴드: 0/0
+골드: 2,500</code></pre>
+  </div>
+</div>
+
+<h2>14. 감정 에셋: emotion prop</h2>
+<div class="test-section" id="test-emotion">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지 — speaker+emotion으로 초상 자동 해석 (joy / sad / 미존재→default 폴백)</div>
+    <div class="pre-header">risu-dialogue</div>
+    <pre><code class="language-risu-dialogue">speaker: Elara
+emotion: joy
+---
+해냈어요! 봉인이 풀렸어요!</code></pre>
+    <div class="pre-header">risu-dialogue</div>
+    <pre><code class="language-risu-dialogue">speaker: Elara
+emotion: sad
+---
+...하지만 대가가 너무 컸네요.</code></pre>
+    <div class="pre-header">risu-dialogue</div>
+    <pre><code class="language-risu-dialogue">speaker: Elara
+emotion: furious
+---
+(미존재 감정 → elara/default.svg 폴백)</code></pre>
+    <div class="pre-header">risu-portrait</div>
+    <pre><code class="language-risu-portrait">name: Elara
+emotion: neutral
+title: Court Mage</code></pre>
+  </div>
+</div>
+
 <!-- Simulate the minimal window.hermesExt API -->
 <script>
   window.hermesExt = {
