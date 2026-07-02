@@ -18,7 +18,7 @@ body text
 ```
 ````
 
-`---` separates frontmatter props from body. If no `---`, the entire content is treated as body (or `_value` prop).
+`---` separates frontmatter props from body. If `---` is omitted, frontmatter ends at the first line that is not `key: value` — everything from that line on is the body. Prefer writing the explicit `---`.
 
 ## Block Types
 
@@ -71,6 +71,7 @@ portrait: /path/to/portrait.png
 대사 내용입니다.
 ```
 ````
+Instead of an explicit `portrait:`, you can use `emotion:` (with the speaker as the character) — see "Emotion Portraits" below.
 
 ### risu-scene — Full-width scene image with caption
 ````
@@ -90,7 +91,38 @@ MP: 42/80
 STAMINA: 60/100
 ```
 ````
-Color-coded: green (>60%), yellow (30-60%), red (<30%).
+Color-coded: green (>60%), yellow (>30% and ≤60%), red (≤30%). Values may contain commas (`HP: 1,200/2,000`).
+
+## Emotion Portraits
+
+Portraits can be resolved automatically from a character + emotion instead of an explicit image path:
+
+````
+```risu-dialogue
+speaker: Elara
+emotion: joy
+---
+해냈어요! 유적의 봉인이 풀렸어요!
+```
+````
+
+Resolution convention: `assets/portraits/<character>/<emotion>.png|webp|jpg|svg` (character and emotion are lowercased). If the emotion file is missing it falls back to the character's `default.*`, then to the shared `portraits/default.svg`.
+
+- `risu-dialogue`: uses `speaker` as the character; add `emotion: <name>`. A `character:` prop overrides the folder name if it differs from the display name.
+- `risu-portrait`: if no `image:` is given, resolves from `name` (+ optional `emotion:`) automatically.
+- Common emotion names: `neutral`, `joy`, `sad`, `angry`, `surprised`, `embarrassed`, `thinking` — any name works as long as the asset file exists.
+
+## Usage Guidance (when to emit blocks)
+
+To create a RisuAI-like experience, emit blocks consistently, not occasionally:
+
+- **Every in-character speech** → `risu-dialogue` with `speaker` and an `emotion` matching the current mood. Keep narration as plain markdown outside the block.
+- **Scene or location change** → one `risu-scene` at the top of the message.
+- **Stat changes** (HP/MP after combat, resource spend) → `risu-status` right after the event.
+- **Inventory, quest info, loot** → `risu-panel`.
+- **Introducing a character or a changed appearance** → `risu-portrait`.
+- Multiple blocks per message are fine (e.g. scene → dialogue → status); interleave with normal prose.
+- Emit each block complete and in one piece; don't split a block across messages.
 
 ## Image URL Resolution
 

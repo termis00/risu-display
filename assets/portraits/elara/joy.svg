@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="260" viewBox="0 0 200 260">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d2b79"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="260" fill="url(#bg)"/>
+  <circle cx="100" cy="85" r="40" fill="#6b5b95"/>
+  <path d="M84 78 Q88 73 92 78" stroke="#fff" stroke-width="3" fill="none"/>
+  <path d="M108 78 Q112 73 116 78" stroke="#fff" stroke-width="3" fill="none"/>
+  <path d="M88 90 Q100 104 112 90" stroke="#ffd700" stroke-width="3" fill="none"/>
+  <path d="M60 60 Q80 30 100 45 Q120 30 140 60" fill="#4a3f6b" stroke="none"/>
+  <ellipse cx="100" cy="190" rx="55" ry="50" fill="#4a3f6b"/>
+  <circle cx="100" cy="150" r="8" fill="#ffd700" opacity="0.9"/>
+  <text x="100" y="250" text-anchor="middle" fill="#ffd700" font-family="sans-serif" font-size="12" font-weight="bold">Elara · joy</text>
+</svg>

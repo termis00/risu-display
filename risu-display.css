@@ -50,6 +50,25 @@
 .risu-size-large .risu-image,
 .risu-size-large .risu-portrait-image { max-width: 240px; max-height: 320px; }
 
+/* xlarge: near-full-width hero image, no frame */
+.risu-image-wrap.risu-size-xlarge,
+.risu-portrait-wrap.risu-size-xlarge {
+  display: block;
+  width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+.risu-size-xlarge .risu-image,
+.risu-size-xlarge .risu-portrait-image {
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  border-radius: 8px;
+}
+
 /* ===== risu-portrait ===== */
 .risu-portrait-wrap {
   display: inline-flex;

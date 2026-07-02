@@ -3,11 +3,6 @@
   "name": "RisuAI Display",
   "scripts": ["risu-display.js"],
   "stylesheets": ["risu-display.css"],
-  "permissions": {
-    "storage": {
-      "owned": true
-    }
-  },
   "settings_schema": [
     {
       "key": "portrait_size",
@@ -16,8 +11,8 @@
       "description": "Default size for character portrait images",
       "options": [
         {"value": "small", "label": "Small (80px)"},
-        {"value": "medium", "label": "Medium (120px)"},
-        {"value": "large", "label": "Large (200px)"}
+        {"value": "medium", "label": "Medium (150px)"},
+        {"value": "large", "label": "Large (240px)"}
       ],
       "default": "medium"
     },
