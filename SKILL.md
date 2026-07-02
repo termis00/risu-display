@@ -73,6 +73,15 @@ portrait: /path/to/portrait.png
 ````
 Instead of an explicit `portrait:`, you can use `emotion:` (with the speaker as the character) — see "Emotion Portraits" below.
 
+### risu-emotion — Large centered emotion asset
+````
+```risu-emotion
+character: 캐릭터명
+emotion: joy
+```
+````
+Renders the character's emotion image big and centered in the message body (RisuAI-style full illustration), resolved the same way as emotion portraits (see "Emotion Portraits"). `size:` defaults to `xlarge`. Use this instead of `risu-dialogue` when the persona asks for large asset display; put the block in the middle of the message near the moment it depicts, and keep the dialogue itself as plain prose.
+
 ### risu-scene — Full-width scene image with caption
 ````
 ```risu-scene
@@ -111,12 +120,13 @@ Resolution convention: `assets/portraits/<character>/<emotion>.png|webp|jpg|svg`
 - `risu-dialogue`: uses `speaker` as the character; add `emotion: <name>`. A `character:` prop overrides the folder name if it differs from the display name.
 - `risu-portrait`: if no `image:` is given, resolves from `name` (+ optional `emotion:`) automatically.
 - Common emotion names: `neutral`, `joy`, `sad`, `angry`, `surprised`, `embarrassed`, `thinking` — any name works as long as the asset file exists.
+- Characters imported from RisuAI `.charx` cards (via `tools/import_charx.py`) install their emotion assets under this convention; the generated personality lists that character's exact available emotions — prefer that list.
 
 ## Usage Guidance (when to emit blocks)
 
 To create a RisuAI-like experience, emit blocks consistently, not occasionally:
 
-- **Every in-character speech** → `risu-dialogue` with `speaker` and an `emotion` matching the current mood. Keep narration as plain markdown outside the block.
+- **Character emotion display** — follow the style the active persona specifies. Compact style: `risu-dialogue` with `speaker` + `emotion` per speech. Large style (RisuAI-like, default for imported cards): one `risu-emotion` block per emotional beat in the middle of the message, dialogue as plain prose. Don't mix both in one message.
 - **Scene or location change** → one `risu-scene` at the top of the message.
 - **Stat changes** (HP/MP after combat, resource spend) → `risu-status` right after the event.
 - **Inventory, quest info, loot** → `risu-panel`.

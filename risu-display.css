@@ -197,6 +197,19 @@
 .risu-gallery-medium .risu-gallery-image { height: 120px; }
 .risu-gallery-large .risu-gallery-image { height: 180px; }
 
+/* ===== risu-emotion (large centered emotion asset) ===== */
+.risu-emotion-wrap {
+  display: block;
+  text-align: center;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+.risu-emotion-wrap .risu-image {
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
 /* ===== risu-dialogue ===== */
 .risu-dialogue-wrap {
   display: flex;
