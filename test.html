@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>risu-display Extension Test</title>
+<link rel="stylesheet" href="risu-display.css">
+<style>
+  body {
+    background: #0d0d1a;
+    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 0 20px;
+    line-height: 1.6;
+  }
+  h1 { color: #ffd700; font-size: 20px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+  h2 { color: #aab; font-size: 15px; margin-top: 32px; }
+  .test-section { margin: 16px 0; padding: 16px; background: #111122; border-radius: 8px; border: 1px solid #222; }
+  .msg-bubble { background: #1a1a2e; border-radius: 12px; padding: 16px; margin: 12px 0; border: 1px solid #2a2a4e; }
+  .msg-label { font-size: 11px; color: #666; margin-bottom: 6px; }
+  .pre-header { font-size: 12px; color: #888; padding: 4px 8px; background: #1a1a2e; border-radius: 4px 4px 0 0; border: 1px solid #333; border-bottom: none; }
+  pre { margin: 0; padding: 12px; background: #111; border: 1px solid #333; border-radius: 0 0 4px 4px; overflow-x: auto; }
+  code { font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; color: #ccc; }
+  p { margin: 8px 0; }
+</style>
+</head>
+<body>
+
+<h1>risu-display Extension Test</h1>
+<p>이 페이지는 Hermes WebUI의 <code>renderMd()</code>가 생성하는 DOM 구조를 시뮬레이션합니다.<br>
+각 섹션에서 코드 블록이 리치 콘텐츠로 변환되는지 확인하세요.</p>
+
+<h2>1. risu-image</h2>
+<div class="test-section" id="test-image">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지</div>
+    <p>캐릭터 이미지입니다:</p>
+    <div class="pre-header">risu-image</div>
+    <pre><code class="language-risu-image">portraits/elara.svg</code></pre>
+  </div>
+</div>
+
+<h2>2. risu-portrait</h2>
+<div class="test-section" id="test-portrait">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지</div>
+    <div class="pre-header">risu-portrait</div>
+    <pre><code class="language-risu-portrait">image: portraits/elara.svg
+name: Elara
+title: Court Mage</code></pre>
+  </div>
+</div>
+
+<h2>3. risu-panel</h2>
+<div class="test-section" id="test-panel">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지</div>
+    <p>현재 캐릭터 상태:</p>
+    <div class="pre-header">risu-panel</div>
+    <pre><code class="language-risu-panel">title: 캐릭터 상태
+style: dark
+---
+HP: 100/100
+MP: 50/50
+레벨: 12
+직업: 궁정 마법사
+골드: 2,500</code></pre>
+  </div>
+</div>
+
+<h2>4. risu-panel (glass style)</h2>
+<div class="test-section" id="test-panel-glass">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지</div>
+    <div class="pre-header">risu-panel</div>
+    <pre><code class="language-risu-panel">title: 퀘스트 정보
+style: glass
+---
+목표: 고대 유적 탐사
+난이도: 어려움
+보상: 500 골드
+상태: 진행 중</code></pre>
+  </div>
+</div>
+
+<h2>5. risu-gallery</h2>
+<div class="test-section" id="test-gallery">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지</div>
+    <p>소지 아이템:</p>
+    <div class="pre-header">risu-gallery</div>
+    <pre><code class="language-risu-gallery">items/sword.svg | items/potion.svg | items/sword.svg | items/potion.svg</code></pre>
+  </div>
+</div>
+
+<h2>6. risu-dialogue</h2>
+<div class="test-section" id="test-dialogue">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지</div>
+    <div class="pre-header">risu-dialogue</div>
+    <pre><code class="language-risu-dialogue">speaker: Elara
+portrait: portraits/elara.svg
+---
+에테르에서 큰 교란을 감지했어요. 고대 유적 아래에서 무언가가 꿈틀거리고 있습니다.</code></pre>
+  </div>
+</div>
+
+<h2>7. risu-scene</h2>
+<div class="test-section" id="test-scene">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지</div>
+    <div class="pre-header">risu-scene</div>
+    <pre><code class="language-risu-scene">image: scenes/ruins.svg
+caption: 달빛 아래 드러난 고대 유적의 폐허</code></pre>
+    <p>황량한 폐허가 달빛 아래 드러납니다.</p>
+  </div>
+</div>
+
+<h2>8. risu-status (HP/MP bars)</h2>
+<div class="test-section" id="test-status">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지</div>
+    <div class="pre-header">risu-status</div>
+    <pre><code class="language-risu-status">title: Elara 상태
+---
+HP: 85/100
+MP: 23/80
+EXP: 750/1000
+스태미나: 15/50</code></pre>
+  </div>
+</div>
+
+<h2>9. 복합 메시지 (실제 사용 예시)</h2>
+<div class="test-section" id="test-combined">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지 — 전투 후 장면</div>
+    <div class="pre-header">risu-scene</div>
+    <pre><code class="language-risu-scene">image: scenes/ruins.svg
+caption: 전투가 끝난 유적</code></pre>
+    <p>전투의 먼지가 가라앉고, Elara가 천천히 일어섭니다.</p>
+    <div class="pre-header">risu-dialogue</div>
+    <pre><code class="language-risu-dialogue">speaker: Elara
+portrait: portraits/elara.svg
+---
+...겨우 이겼네요. 하지만 더 깊은 곳에 무언가가 있어요.</code></pre>
+    <div class="pre-header">risu-status</div>
+    <pre><code class="language-risu-status">title: 전투 후 상태
+---
+HP: 32/100
+MP: 8/80
+스태미나: 5/50</code></pre>
+    <div class="pre-header">risu-panel</div>
+    <pre><code class="language-risu-panel">title: 전리품 획득
+style: dark
+---
+고대 부적: 1개
+마력 결정: 3개
+골드: +150</code></pre>
+  </div>
+</div>
+
+<!-- Simulate the minimal window.hermesExt API -->
+<script>
+  window.hermesExt = {
+    settings: {
+      forExtension: function() {
+        return { get: function() { return undefined; } };
+      }
+    }
+  };
+  window.HermesExtensionSettings = { primeFromStatus: function() {} };
+</script>
+
+<!-- Load extension -->
+<script src="risu-display.js"></script>
+
+<!-- Trigger processing (simulate postProcessRenderedMessages) -->
+<script>
+  document.querySelectorAll('.test-section').forEach(function(section) {
+    if (typeof window.postProcessRenderedMessages === 'function') {
+      window.postProcessRenderedMessages(section);
+    }
+  });
+
+  // Fallback: directly call processRisuBlocks if hook didn't register
+  // (since postProcessRenderedMessages doesn't exist in this test page,
+  //  we manually invoke the processing after a short delay)
+  setTimeout(function() {
+    var codes = document.querySelectorAll('code[class^="language-risu-"]');
+    if (codes.length > 0 && codes[0].closest('pre') && !codes[0].closest('pre').dataset.risuProcessed) {
+      console.log('[test] Hook did not fire, extension may need postProcessRenderedMessages. Reloading with shim...');
+      // Create the shim and reload extension
+      window.postProcessRenderedMessages = function(container) {};
+      // Re-execute the extension's hook
+      window.__risuDisplayLoaded = false;
+      var s = document.createElement('script');
+      s.src = 'risu-display.js';
+      s.onload = function() {
+        document.querySelectorAll('.test-section').forEach(function(section) {
+          if (typeof window.postProcessRenderedMessages === 'function') {
+            window.postProcessRenderedMessages(section);
+          }
+        });
+      };
+      document.body.appendChild(s);
+    }
+  }, 500);
+</script>
+
+</body>
+</html>

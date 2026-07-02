@@ -1,0 +1,305 @@
+/* ===== risu-display — RisuAI-style rich content for Hermes WebUI ===== */
+
+/* --- Common reset --- */
+.risu-image-wrap,
+.risu-portrait-wrap,
+.risu-panel-wrap,
+.risu-gallery-wrap,
+.risu-dialogue-wrap,
+.risu-scene-wrap,
+.risu-status-wrap {
+  margin: 10px 0;
+  font-family: inherit;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+/* --- Image fallback --- */
+.risu-image-fallback {
+  padding: 16px;
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed #444;
+  border-radius: 6px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== risu-image ===== */
+.risu-image-wrap {
+  display: inline-block;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border, #333);
+  background: var(--surface, #1a1a2e);
+}
+.risu-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+.risu-size-small .risu-image,
+.risu-size-small .risu-portrait-image { max-width: 80px; max-height: 80px; }
+.risu-size-medium .risu-image,
+.risu-size-medium .risu-portrait-image { max-width: 150px; max-height: 200px; }
+.risu-size-large .risu-image,
+.risu-size-large .risu-portrait-image { max-width: 240px; max-height: 320px; }
+
+/* ===== risu-portrait ===== */
+.risu-portrait-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  border: 1px solid #3a3a5e;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.risu-portrait-image {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+.risu-portrait-info {
+  padding: 8px 14px;
+  text-align: center;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+}
+.risu-portrait-name {
+  font-weight: bold;
+  color: #ffd700;
+  font-size: 14px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+.risu-portrait-title {
+  color: #aab;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* ===== risu-panel ===== */
+.risu-panel-wrap {
+  border-radius: 12px;
+  padding: 16px;
+  color: #e0e0e0;
+  max-width: 400px;
+}
+/* Dark style (default) */
+.risu-panel-dark {
+  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  border: 1px solid #3a3a5e;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+/* Glass style */
+.risu-panel-glass {
+  background: rgba(30, 30, 60, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+/* Minimal style */
+.risu-panel-minimal {
+  background: transparent;
+  border: 1px solid var(--border, #333);
+  box-shadow: none;
+}
+.risu-panel-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: #ffd700;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  text-shadow: 0 1px 4px rgba(255, 215, 0, 0.15);
+}
+.risu-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.risu-panel-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+.risu-panel-label {
+  color: #8a8aaa;
+  font-size: 13px;
+}
+.risu-panel-value {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 13px;
+}
+.risu-panel-text {
+  color: #ccc;
+  font-size: 13px;
+  padding: 2px 0;
+}
+
+/* ===== risu-gallery ===== */
+.risu-gallery-wrap {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #555 transparent;
+}
+.risu-gallery-wrap::-webkit-scrollbar { height: 6px; }
+.risu-gallery-wrap::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+.risu-gallery-item {
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #3a3a5e;
+  background: #1a1a2e;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.risu-gallery-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.risu-gallery-image {
+  display: block;
+  width: auto;
+  object-fit: cover;
+}
+.risu-gallery-small .risu-gallery-image { height: 80px; }
+.risu-gallery-medium .risu-gallery-image { height: 120px; }
+.risu-gallery-large .risu-gallery-image { height: 180px; }
+
+/* ===== risu-dialogue ===== */
+.risu-dialogue-wrap {
+  display: flex;
+  gap: 12px;
+  background: linear-gradient(145deg, #16213e, #1a1a2e);
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid #3a3a5e;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  max-width: 500px;
+}
+.risu-dialogue-portrait {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffd700;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+}
+.risu-dialogue-body {
+  flex: 1;
+  min-width: 0;
+}
+.risu-dialogue-speaker {
+  font-weight: bold;
+  color: #ffd700;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.risu-dialogue-text {
+  color: #ddd;
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+/* ===== risu-scene ===== */
+.risu-scene-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #3a3a5e;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+.risu-scene-image {
+  display: block;
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+}
+.risu-scene-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== risu-status (HP/MP bars) ===== */
+.risu-status-wrap {
+  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  border: 1px solid #3a3a5e;
+  border-radius: 12px;
+  padding: 14px;
+  max-width: 350px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.risu-status-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffd700;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+.risu-status-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.risu-status-bar-label {
+  color: #aab;
+  font-size: 12px;
+  min-width: 32px;
+  font-weight: 600;
+}
+.risu-status-bar-track {
+  flex: 1;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.risu-status-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+.risu-bar-high { background: linear-gradient(90deg, #22c55e, #4ade80); }
+.risu-bar-mid { background: linear-gradient(90deg, #eab308, #facc15); }
+.risu-bar-low { background: linear-gradient(90deg, #ef4444, #f87171); }
+.risu-status-bar-text {
+  color: #888;
+  font-size: 11px;
+  min-width: 50px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .risu-dialogue-wrap { flex-direction: column; align-items: flex-start; }
+  .risu-dialogue-portrait { width: 40px; height: 40px; }
+  .risu-panel-wrap,
+  .risu-status-wrap { max-width: 100%; }
+  .risu-size-large .risu-image,
+  .risu-size-large .risu-portrait-image { max-width: 160px; max-height: 220px; }
+}

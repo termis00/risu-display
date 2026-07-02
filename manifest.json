@@ -1,0 +1,49 @@
+{
+  "id": "risu-display",
+  "name": "RisuAI Display",
+  "scripts": ["risu-display.js"],
+  "stylesheets": ["risu-display.css"],
+  "permissions": {
+    "storage": {
+      "owned": true
+    }
+  },
+  "settings_schema": [
+    {
+      "key": "portrait_size",
+      "type": "enum",
+      "label": "Portrait image size",
+      "description": "Default size for character portrait images",
+      "options": [
+        {"value": "small", "label": "Small (80px)"},
+        {"value": "medium", "label": "Medium (120px)"},
+        {"value": "large", "label": "Large (200px)"}
+      ],
+      "default": "medium"
+    },
+    {
+      "key": "panel_style",
+      "type": "enum",
+      "label": "Panel visual style",
+      "description": "Visual theme for risu-panel blocks",
+      "options": [
+        {"value": "dark", "label": "Dark (RisuAI style)"},
+        {"value": "glass", "label": "Glass / Translucent"},
+        {"value": "minimal", "label": "Minimal"}
+      ],
+      "default": "dark"
+    },
+    {
+      "key": "gallery_height",
+      "type": "enum",
+      "label": "Gallery thumbnail height",
+      "description": "Height of images in risu-gallery blocks",
+      "options": [
+        {"value": "small", "label": "Small (80px)"},
+        {"value": "medium", "label": "Medium (120px)"},
+        {"value": "large", "label": "Large (180px)"}
+      ],
+      "default": "medium"
+    }
+  ]
+}

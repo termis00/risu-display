@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <rect width="80" height="80" fill="#1a1a2e" rx="8"/>
+  <rect x="34" y="15" width="12" height="8" fill="#8b4513" rx="2"/>
+  <path d="M32 23 L32 35 Q25 45 25 55 Q25 65 40 65 Q55 65 55 55 Q55 45 48 35 L48 23 Z" fill="#22c55e" opacity="0.7"/>
+  <path d="M32 23 L48 23" stroke="#8b4513" stroke-width="2"/>
+  <text x="40" y="78" text-anchor="middle" fill="#666" font-family="sans-serif" font-size="7">Potion</text>
+</svg>
