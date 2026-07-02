@@ -41,6 +41,24 @@ Emotion portraits resolve by convention from `assets/portraits/<character>/<emot
 
 See [SKILL.md](SKILL.md) for the full block syntax — it doubles as the instruction file for your agent.
 
+## Importing a RisuAI character (.charx)
+
+Export your character from RisuAI as `.charx`, then:
+
+```bash
+python3 tools/import_charx.py character.charx --install
+```
+
+This does three things:
+
+1. Copies the card's emotion/icon assets into `assets/portraits/<character>/<emotion>.<ext>` (the convention risu-display resolves at render time).
+2. Generates `personas/<character>.md` — the card's description, personality, scenario, lorebook, and greeting, plus rich-output rules listing the imported emotions — and a ready-to-merge `personas/<character>.personality.yaml`.
+3. With `--install`, merges the persona into `~/.hermes/config.yaml` under `agent.personalities` (a `.bak` backup is kept; without `--install` it prints manual steps).
+
+Then start a Hermes session and run `/personality <character>` — the agent role-plays the card and emits `risu-dialogue` blocks with matching emotions, which the extension renders with the imported portraits.
+
+Options: `--assets-dir` (installed extension's asset dir), `--personas-dir`, `--hermes-home`, `--force` (overwrite existing assets). Remote (`http…`) asset URIs are not downloaded; `ccdefault:` entries are skipped. Only `chara_card_v3` cards are supported.
+
 ## License
 
 MIT

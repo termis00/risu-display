@@ -111,6 +111,7 @@ Resolution convention: `assets/portraits/<character>/<emotion>.png|webp|jpg|svg`
 - `risu-dialogue`: uses `speaker` as the character; add `emotion: <name>`. A `character:` prop overrides the folder name if it differs from the display name.
 - `risu-portrait`: if no `image:` is given, resolves from `name` (+ optional `emotion:`) automatically.
 - Common emotion names: `neutral`, `joy`, `sad`, `angry`, `surprised`, `embarrassed`, `thinking` — any name works as long as the asset file exists.
+- Characters imported from RisuAI `.charx` cards (via `tools/import_charx.py`) install their emotion assets under this convention; the generated personality lists that character's exact available emotions — prefer that list.
 
 ## Usage Guidance (when to emit blocks)
 
