@@ -29,6 +29,17 @@
       "default": "dark"
     },
     {
+      "key": "keep_activity_open",
+      "type": "enum",
+      "label": "Keep 'Processed' activity panel expanded",
+      "description": "Auto-expand the collapsible agent activity/worklog group after each turn instead of Hermes WebUI's default auto-collapse. Groups you close by hand stay closed.",
+      "options": [
+        {"value": "on", "label": "On (always expanded)"},
+        {"value": "off", "label": "Off (WebUI default)"}
+      ],
+      "default": "on"
+    },
+    {
       "key": "gallery_height",
       "type": "enum",
       "label": "Gallery thumbnail height",

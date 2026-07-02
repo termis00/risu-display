@@ -338,6 +338,67 @@
     }
   }
 
+  // --- Keep "Processed" activity groups expanded ---
+  // Hermes WebUI re-renders a finished turn's activity/worklog group collapsed.
+  // For chat-style sessions that feels abrupt, so (setting keep_activity_open,
+  // default on) auto-expand collapsed groups by clicking their summary button —
+  // that path updates aria state and persists 'open' in the WebUI's own
+  // disclosure store (hermes-activity-disclosure:<session>:<key>), so later
+  // re-renders keep it open. Groups the user explicitly closed ('closed' in
+  // the store) are left alone, and each DOM node is only auto-expanded once
+  // so a manual collapse is never fought.
+  const DISCLOSURE_PREFIX = 'hermes-activity-disclosure:';
+
+  function userClosedGroup(key) {
+    if (!key) return false;
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.indexOf(DISCLOSURE_PREFIX) === 0 && k.slice(-(key.length + 1)) === ':' + key) {
+          return localStorage.getItem(k) === 'closed';
+        }
+      }
+    } catch (_) { /* storage unavailable — treat as not closed */ }
+    return false;
+  }
+
+  function expandActivityGroups() {
+    if (getSetting('keep_activity_open', 'on') !== 'on') return;
+    document.querySelectorAll(
+      '.agent-activity-group.tool-call-group-collapsed,' +
+      '.tool-call-group.tool-call-group-collapsed'
+    ).forEach(group => {
+      if (group.dataset.risuAutoExpanded) return;
+      group.dataset.risuAutoExpanded = '1';
+      const key = group.getAttribute('data-activity-disclosure-key') ||
+                  group.getAttribute('data-tool-worklog-key') || '';
+      if (userClosedGroup(key)) return;
+      const summary = group.querySelector('.tool-call-group-summary, .tool-worklog-summary');
+      if (summary && !summary.disabled && summary.getAttribute('aria-disabled') !== 'true') {
+        summary.click();
+      }
+    });
+  }
+
+  let _expandQueued = false;
+
+  function queueExpand() {
+    if (_expandQueued) return;
+    _expandQueued = true;
+    requestAnimationFrame(() => {
+      _expandQueued = false;
+      try { expandActivityGroups(); } catch (e) {
+        console.warn('[risu-display] activity expand failed:', e);
+      }
+    });
+  }
+
+  function watchActivityGroups() {
+    queueExpand();
+    new MutationObserver(queueExpand)
+      .observe(document.body, { childList: true, subtree: true });
+  }
+
   // --- Hook into postProcessRenderedMessages ---
 
   let _hookAttempts = 0;
@@ -360,9 +421,14 @@
     setTimeout(hook, 250);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => hook(), { once: true });
-  } else {
+  function start() {
     hook();
+    watchActivityGroups();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start, { once: true });
+  } else {
+    start();
   }
 })();

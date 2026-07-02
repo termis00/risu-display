@@ -147,3 +147,6 @@ To create a RisuAI-like experience, emit blocks consistently, not occasionally:
 | `portrait_size` | small, medium, large | medium |
 | `panel_style` | dark, glass, minimal | dark |
 | `gallery_height` | small, medium, large | medium |
+| `keep_activity_open` | on, off | on |
+
+(`keep_activity_open` is user-facing UX, not agent-facing: it keeps the WebUI's "Processed" activity panel expanded after each turn.)
