@@ -229,6 +229,23 @@ title: Court Mage</code></pre>
   </div>
 </div>
 
+<h2>15. risu-emotion (본문 중앙 대형 에셋)</h2>
+<div class="test-section" id="test-emotion-large">
+  <div class="msg-bubble">
+    <div class="msg-label">AI 메시지 — 대화 버블 없이 에셋만 크게 (기본 xlarge, 중앙 정렬)</div>
+    <p>Elara가 미소지었다.</p>
+    <div class="pre-header">risu-emotion</div>
+    <pre><code class="language-risu-emotion">character: elara
+emotion: joy</code></pre>
+    <p>"드디어 해냈어요!" 대사는 일반 본문으로 흐른다.</p>
+    <div class="pre-header">risu-emotion</div>
+    <pre><code class="language-risu-emotion">character: elara
+emotion: sad
+size: medium</code></pre>
+    <p>(size: medium 축소 표시 + 미존재 감정은 default 폴백)</p>
+  </div>
+</div>
+
 <!-- Simulate the minimal window.hermesExt API -->
 <script>
   window.hermesExt = {

@@ -97,7 +97,7 @@
   // --- Emotion asset resolution ---
   // Convention: assets/portraits/<character>/<emotion>.<ext>, falling back to
   // the character's default portrait, then the shared default portrait.
-  const EMOTION_EXTS = ['png', 'webp', 'jpg', 'svg'];
+  const EMOTION_EXTS = ['png', 'webp', 'jpg', 'gif', 'svg'];
 
   function emotionCandidates(character, emotion) {
     const c = encodeURIComponent(character.trim().toLowerCase());
@@ -229,6 +229,22 @@
     return wrap;
   }
 
+  // Large centered emotion asset — RisuAI-style full illustration in the
+  // message body, resolved from character + emotion like dialogue portraits.
+  function processEmotion(raw) {
+    const { props, body } = parseBlock(raw);
+    const who = props.character || props.name || props.speaker || '';
+    if (!props.emotion && body) props.emotion = body.split('\n')[0].trim();
+    const size = pick(props.size, SIZES, 'xlarge');
+    const { src, fallbacks } = resolvePortraitSource(props, who, true);
+    if (!src) return null;
+
+    const wrap = el('div', 'risu-image-wrap risu-emotion-wrap risu-size-' + size);
+    wrap.appendChild(makeImg(src, (who ? who + ' — ' : '') + (props.emotion || 'default'),
+                             'risu-image', fallbacks));
+    return wrap;
+  }
+
   function processScene(raw) {
     const { props, body } = parseBlock(raw);
     const image = props.image || props.path || body || raw.trim();
@@ -293,6 +309,7 @@
     'language-risu-panel': processPanel,
     'language-risu-gallery': processGallery,
     'language-risu-dialogue': processDialogue,
+    'language-risu-emotion': processEmotion,
     'language-risu-scene': processScene,
     'language-risu-status': processStatus,
   };
